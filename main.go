@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"os"
 
 	"github.com/skip2/go-qrcode"
 )
@@ -24,9 +25,12 @@ func Base64Encode(data []byte) string {
 }
 
 func HomePageHandler(w http.ResponseWriter, r *http.Request) {
+	secretkey := os.Getenv("SECRETKEY")
+	notsecretkey := os.Getenv("NOTSECRETKEY")
 	url := "https://www.initializ.ai/early-access"
 	size := 256 // Set the desired size of the QR code
-	fmt.Println("Request Called")
+	fmt.Println(secretkey)
+	fmt.Println("Request Called with Key: " + secretkey)
 	// Generate the QR code
 	qrCodeImage, err := generateQRCode(url, size)
 	if err != nil {
@@ -41,7 +45,7 @@ func HomePageHandler(w http.ResponseWriter, r *http.Request) {
 		QRCode  []byte
 	}{
 		Title:   "initializ",
-		Message: "Be First in Line for Early Access to Initializ",
+		Message: "Be First in Line for Early Access to " + secretkey + " " + notsecretkey,
 		QRCode:  qrCodeImage,
 	}
 
